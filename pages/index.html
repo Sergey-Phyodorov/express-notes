@@ -12,9 +12,40 @@
           crossorigin="anonymous">
     <title>Express-notes</title>
 </head>
+<style>
+    body {
+        background-color: #f8f9fa;
+        user-select: none;
+    }
+</style>
 <body>
 <div class="container">
-    <h1 class="text-center">Node simple server </h1>
+    <h1 class="text-center my-3">Node simple server </h1>
+
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h2>Notes</h2>
+            <form id="notes-form"
+                  action="/"
+                  method="post">
+                <div class="mb-3">
+                    <label for="note"
+                           class="form-label">Note</label>
+                    <input type="text"
+                           class="form-control"
+                           id="note"
+                           name="note"
+                           required>
+                </div>
+                <button type="submit"
+                        class="btn btn-primary">Add note
+                </button>
+            </form>
+            <ul id="notes"
+                class="list-group mt-3">
+            </ul>
+        </div>
+    </div>
 </div>
 </body>
 </html>
