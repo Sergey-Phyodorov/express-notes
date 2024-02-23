@@ -1,0 +1,26 @@
+{
+  "name": "express-notes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "serve": "nodemon index.js"
+  },
+  "keywords": [
+    "javascript",
+    "node",
+    "express"
+  ],
+  "author": "Phyodorov S.V. <mail@phyodorov.ru>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "prettier": "^3.2.5",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.32",
+    "nodemon": "^3.1.0"
+  }
+}
