@@ -1,40 +1,56 @@
-const http = require('http');
-const fs = require('fs/promises');
-const path = require('path');
+const express = require('express');
 const chalk = require('chalk');
-const { addNote } = require('./notes.controller.js');
+const path = require('path');
+const {
+    addNote,
+    getNotes,
+    removeNote,
+    updateNote
+} = require('./notes.controller.js');
 
 const port = 3000;
+const app = express();
 
-const basePath = path.join(__dirname, 'pages');
+app.set('view engine', 'ejs');
+app.set('views', 'pages');
 
-const server = http.createServer(async (req, res) => {
-    console.log(chalk.bgBlue('Метод запроса:', req.method));
-    console.log(chalk.blueBright('URL-адрес запроса:', req.url));
+app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-    if (req.method === 'GET') {
-        const content = await fs.readFile(path.join(basePath, 'index.html'));
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(content);
-    } else if (req.method === 'POST') {
-        const body = [];
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-
-        req.on('data', chunk => {
-            body.push(Buffer.from(chunk));
-        });
-
-        req.on('end', () => {
-            const titleNote = body
-                .toString()
-                .split('=')[1]
-                .replaceAll('+', ' ');
-            addNote(titleNote);
-            res.end(`Title note: ${titleNote}`);
-        });
-    }
+app.get('/', async (req, res) => {
+    res.render('index', {
+        notes: await getNotes(),
+        createNote: false
+    });
 });
 
-server.listen(port, () => {
+app.post('/', async (req, res) => {
+    const titleNote = req.body.note;
+    await addNote(titleNote);
+    res.render('index', {
+        notes: await getNotes(),
+        createNote: true
+    });
+});
+
+app.delete('/:id', async (req, res) => {
+    await removeNote(req.params.id);
+
+    res.render('index', {
+        notes: await getNotes(),
+        createNote: false
+    });
+});
+
+app.put('/:id', async (req, res) => {
+    await updateNote({ id: req.params.id, title: req.body.title });
+    res.render('index', {
+        notes: await getNotes(),
+        createNote: false
+    });
+});
+
+app.listen(port, () => {
     console.log(chalk.green(`Server работает на порту ${port}`));
 });
